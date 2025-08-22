@@ -1,6 +1,4 @@
     // src/App.tsx
-    import React from 'react';
-    
     function App() {
       return (
         <div className="min-h-screen bg-black text-lime-400 font-mono p-4">

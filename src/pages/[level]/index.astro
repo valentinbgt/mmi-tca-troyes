@@ -1,0 +1,45 @@
+---
+import MainLayout from '../../layouts/mainlayout.astro';
+import Sidebar from '../../components/sidebar.astro';
+import MainContent from '../../components/maincontent.astro';
+
+import fs from 'fs/promises';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+// Fonction pour récupérer les niveaux
+export async function getStaticPaths() {
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = path.dirname(__filename);
+
+    const levelsPath = path.join(__dirname, '../../../ressources');
+
+    const levels = await fs.readdir(levelsPath, { withFileTypes: true })
+        .then(files => files.filter(f => f.isDirectory()).map(f => f.name))
+        .catch(() => []);
+
+    const paths = [];
+
+    for (const level of levels) {
+        const users = await fs.readdir(path.join(levelsPath, level), { withFileTypes: true })
+            .then(files => files.filter(f => f.isDirectory()).map(f => f.name))
+            .catch(() => []);
+        
+        // Pour chaque niveau, nous générons une page pour chaque utilisateur
+        for (const user of users) {
+            paths.push({
+                params: { level: level, user: user },
+                props: { currentLevel: level }
+            });
+        }
+    }
+    return paths;
+}
+
+const { currentLevel } = Astro.props;
+---
+
+<MainLayout>
+    <Sidebar slot="sidebar" currentLevel={currentLevel} />
+    <MainContent slot="maincontent" />
+</MainLayout>

@@ -1,0 +1,163 @@
+---
+import fs from 'fs/promises';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+export interface Props {
+    currentLevel: string;
+}
+
+const { currentLevel } = Astro.props;
+
+const focusUser = import.meta.env.FOCUS_USER || 'thomas-ca';
+const showAllUsers = import.meta.env.SHOW_ALL_USERS === 'true';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Lister les répertoires de niveau
+const levelsPath = path.join(__dirname, '../../ressources');
+const levels = await fs.readdir(levelsPath, { withFileTypes: true })
+    .then(files => files.filter(f => f.isDirectory()).map(f => f.name))
+    .catch(() => []);
+
+// Lister les utilisateurs dans le niveau
+const studentsPath = path.join(levelsPath, currentLevel);
+const studentsDirs = await fs.readdir(studentsPath, { withFileTypes: true })
+    .then(files => files.filter(f => f.isDirectory()).map(f => f.name))
+    .catch(() => []);
+
+// Fonction pour lister les étudiants et leurs ressources pour un niveau et un utilisateur donnés
+const userResources = async (user) => {
+    const userPath = path.join(levelsPath, currentLevel, user);
+    const resources = {};
+    for (const type of ['cours', 'tps', 'projets']) {
+        const typePath = path.join(userPath, type);
+        resources[type] = await fs.readdir(typePath, { withFileTypes: true })
+            .then(files => files.filter(f => f.isDirectory()).map(f => f.name))
+            .catch(() => []);
+    }
+    return resources;
+};
+
+const focusedUserResources = await userResources(focusUser);
+const otherUsers = studentsDirs.filter(user => user !== focusUser);
+
+const allOtherResources = showAllUsers
+    ? await Promise.all(
+        otherUsers.map(async (user) => ({
+            user,
+            resources: await userResources(user)
+        }))
+    )
+    : [];
+
+
+---
+
+<div class="p-6">
+    <div class="flex justify-center mb-6 pr-5">
+        <div class="relative flex items-center px-3 py-2">
+        <select id="level-select" class="flex items-center w-full px-3 py-2 text-sm font-medium text-slate-700 rounded-lg shadow-sm ring-1 ring-inset ring-slate-200 hover:bg-slate-200">
+            {levels.map(level => (
+                <option value={`/${level}`} selected={level === currentLevel}>{level.toUpperCase()}</option>
+            ))}
+        </select>
+        </div>
+    </div>
+    <h1 class="text-xl font-bold mb-4">Ressources principales</h1>
+    <nav>
+        <ul>
+            {Object.keys(focusedUserResources).map(type => (
+                <>
+                    <li class="font-bold my-2 text-gray-700">{type.toUpperCase()}</li>
+                    <ul>
+                        {focusedUserResources[type].map(resource => (
+                            <li class="pl-4 my-1">
+                                <a href="#" data-url={`/ressources/${focusUser}/${type}/${resource}`} class="text-blue-600 hover:underline flex items-center">
+                                    {resource}
+                                    <svg class="w-4 h-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4m-6-4h4m-4-4v4m0 0l-5 5" />
+                                    </svg>
+                                </a>
+                            </li>
+                        ))}
+                    </ul>
+                </>
+            ))}
+        </ul>
+    </nav>
+    {showAllUsers && (
+        <>
+            <h2 class="text-lg font-bold mt-8 mb-4">Ressources partagées</h2>
+            <ul>
+            {allOtherResources.map(({ user, resources }) => {
+                const hasResources = Object.values(resources).some(list => list.length > 0);
+                
+                return (
+                    <li key={user}>
+                        <div class="font-bold my-2 text-gray-700">{user.toUpperCase().split('-').join(' ')}.</div>
+                        {hasResources && (
+                            <ul>
+                                {Object.entries(resources).map(([type, resourcesList]) => (
+                                    resourcesList.length > 0 && (
+                                        // Map sur chaque ressource de la liste
+                                        resourcesList.map(resource => (
+                                            <li key={`${type}-${resource}`} class="pl-4 my-1">
+                                            <span class="flex">
+                                                <a 
+                                                    href="#" 
+                                                    data-url={`/ressources/${user}/${type}/${resource}`} 
+                                                    class="text-blue-600 hover:underline flex items-center"
+                                                >
+                                                    {resource}
+                                                </a>
+                                                <a href={`/ressources/${user}/${type}/${resource}`} target="_blank" class="text-blue-600 inline-flex align-middle items-center">
+                                                    <svg class="w-4 h-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4m-6-4h4m-4-4v4m0 0l-5 5" />
+                                                    </svg>
+                                                </a>
+                                            </span>
+                                            </li>
+                                        ))
+                                    )
+                                ))}
+                            </ul>
+                        )}
+                    </li>
+                );
+            })}
+            </ul>
+        </>
+    )}
+</div>
+
+<script>
+    // Gestion du select
+    document.addEventListener('DOMContentLoaded', () => {
+        const levelSelect = document.getElementById('level-select');
+        levelSelect.addEventListener('change', (e) => {
+            window.location.href = e.target.value;
+        });
+    });
+// Le code JavaScript pour la gestion des clics
+document.addEventListener('DOMContentLoaded', () => {
+    const iframe = document.getElementById('content-iframe');
+    const links = document.querySelectorAll('[data-url]');
+    console.log('links',links);
+
+    links.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const url = e.target.closest('a').getAttribute('data-url');
+            iframe.src = url;
+            // Ouvrir dans un nouvel onglet
+            const externalLink = e.target.closest('a').querySelector('svg');
+            if (externalLink) {
+                externalLink.parentElement.href = url;
+                externalLink.parentElement.target = "_blank";
+            }
+        });
+    });
+});
+</script>

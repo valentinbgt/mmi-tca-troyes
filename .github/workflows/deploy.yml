@@ -1,4 +1,4 @@
-name: Deploy to GitHub Pages
+name: Deploy Monorepo Navigation
 
 on:
   workflow_dispatch:

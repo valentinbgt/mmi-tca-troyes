@@ -1,0 +1,49 @@
+name: Build s5 thomas-ca Notions
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "ressources/s5/thomas-ca/cours/notions/**"
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+#defaults:
+#  run:
+#    working-directory: ressources/s5/thomas-ca/projets/hello-world
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+
+      - name: Markdown to Html
+        run: |
+          mkdir -p dist/s5/thomas-ca/cours/notions/
+          npx @marp-team/marp-cli@latest ressources/s5/thomas-ca/cours/notions/main.md -o dist/s5/thomas-ca/cours/notions/index.html --theme gaia
+
+      - name: Deploy to gh-pages
+        run: |
+          git fetch origin gh-pages
+          git checkout gh-pages
+
+          rsync -a dist/* ./
+          rm -rf dist .astro
+
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add .
+          git commit -m "Update Hello-World site" || echo "No changes to commit"
+          git push origin gh-pages

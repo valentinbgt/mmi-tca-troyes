@@ -1,0 +1,19 @@
+---
+import Layout from "../layouts/Layout.astro";
+import AvatarGenerator from "../components/AvatarGenerator.tsx";
+---
+
+<Layout title="TP Avatar Factory">
+    <div class="grid md:grid-cols-2 gap-4">
+        <!-- Bloc génération -->
+        <AvatarGenerator client:load />
+
+        <!-- Bloc favoris -->
+        <div class="border border-green-500 p-4 rounded-xl">
+            <h2 class="text-xl mb-2">⭐ Mes Favoris</h2>
+            <div class="space-y-2">
+                <p>Aucun favori pour l’instant</p>
+            </div>
+        </div>
+    </div>
+</Layout>

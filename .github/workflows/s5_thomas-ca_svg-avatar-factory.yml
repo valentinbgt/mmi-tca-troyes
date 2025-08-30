@@ -31,6 +31,7 @@ jobs:
           npm run build
         working-directory: ressources/s5/thomas-ca/projets/svg-avatar-factory
         env:
+          PUBLIC_APP_URL: ${{ vars.PUBLIC_APP_URL }}
           PUBLIC_SUPABASE_URL: ${{ vars.PUBLIC_SUPABASE_URL }}
           PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.PUBLIC_SUPABASE_ANON_KEY }}
           PUBLIC_FUNCTION_GENERATE_AVATAR_URL: ${{ vars.PUBLIC_FUNCTION_GENERATE_AVATAR_URL }}

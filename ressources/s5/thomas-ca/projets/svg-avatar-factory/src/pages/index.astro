@@ -5,17 +5,56 @@ import AuthButtons from "../components/AuthButtons.tsx";
 import Favorites from "../components/Favorites.tsx";
 ---
 
-<Layout title="TP Avatar Factory">
-    <div class="flex justify-end mb-4">
+<Layout title="Avatar Factory Retro">
+    <style>
+        .retro-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            max-width: 100%;
+        }
+
+        @media (min-width: 768px) {
+            .retro-container {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .retro-block {
+            background-color: #706fd3;
+            border: 4px solid #ffda79;
+            border-radius: 8px;
+            padding: 20px;
+            color: #ffda79;
+        }
+
+        .retro-block h2 {
+            color: #ffda79;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .auth-section {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 20px;
+        }
+    </style>
+
+    <div class="auth-section">
         <AuthButtons client:load />
     </div>
-    <div class="grid md:grid-cols-2 gap-4">
+
+    <div class="retro-container">
         <!-- Bloc génération -->
         <AvatarGenerator client:load />
 
         <!-- Bloc favoris -->
-        <div class="border border-green-500 p-4 rounded-xl">
-            <h2 class="text-xl mb-2">⭐ Mes Favoris</h2>
+        <div class="retro-block">
+            <h2>⭐ Mes Favoris</h2>
             <Favorites client:load />
         </div>
     </div>

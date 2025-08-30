@@ -67,23 +67,109 @@ export default function AvatarGenerator() {
   };
 
   return (
-    <div className="border border-green-500 p-4 rounded-xl">
-      <h2 className="text-xl mb-2">🎨 Générateur d’avatars</h2>
+    <div
+      className="retro-block"
+      style={{
+        backgroundColor: "#706fd3",
+        border: "4px solid #ffda79",
+        borderRadius: "8px",
+        padding: "20px",
+        color: "#ffda79",
+      }}
+    >
+      <h2
+        style={{
+          color: "#ffda79",
+          fontSize: "1.5rem",
+          marginBottom: "15px",
+          textTransform: "uppercase",
+          fontWeight: "bold",
+          letterSpacing: "1px",
+        }}
+      >
+        🎨 Générateur d'avatars
+      </h2>
 
-      <div className="bg-black border border-green-700 h-40 flex items-center justify-center overflow-auto p-2">
-        {loading && <p>⏳ Génération...</p>}
+      <div
+        className="avatar-container"
+        style={{
+          backgroundColor: "#40407a",
+          border: "4px solid #ffda79",
+          borderRadius: "8px",
+          height: "160px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          overflow: "auto",
+          padding: "20px",
+          marginBottom: "20px",
+          imageRendering: "pixelated",
+        }}
+      >
+        {loading && <p style={{ color: "#ffda79" }}>⏳ Génération...</p>}
         {!loading && svg && <div dangerouslySetInnerHTML={{ __html: svg }} />}
-        {!loading && !svg && <p>Aucun avatar généré</p>}
+        {!loading && !svg && (
+          <p style={{ color: "#ffda79" }}>Aucun avatar généré</p>
+        )}
       </div>
 
-      <div className="mt-4 flex gap-2">
-        <button onClick={generate} className="bg-green-700 px-4 py-2 rounded">
+      <div className="flex flex-wrap gap-2">
+        <button
+          onClick={generate}
+          style={{
+            backgroundColor: "#ff5252",
+            color: "white",
+            border: "none",
+            padding: "12px 24px",
+            fontFamily: "Courier New, monospace",
+            fontSize: "14px",
+            cursor: "pointer",
+            borderRadius: "4px",
+            transition: "all 0.3s",
+            boxShadow: "0 4px 0 #b33939",
+            textTransform: "uppercase",
+            fontWeight: "bold",
+          }}
+          onMouseOver={(e) => {
+            e.currentTarget.style.backgroundColor = "#ff3838";
+            e.currentTarget.style.transform = "translateY(2px)";
+            e.currentTarget.style.boxShadow = "0 2px 0 #b33939";
+          }}
+          onMouseOut={(e) => {
+            e.currentTarget.style.backgroundColor = "#ff5252";
+            e.currentTarget.style.transform = "translateY(0px)";
+            e.currentTarget.style.boxShadow = "0 4px 0 #b33939";
+          }}
+        >
           Générer un avatar
         </button>
         {svg && (
           <button
             onClick={copyToClipboard}
-            className="bg-green-900 px-4 py-2 rounded"
+            style={{
+              backgroundColor: "#33d9b2",
+              color: "white",
+              border: "none",
+              padding: "12px 24px",
+              fontFamily: "Courier New, monospace",
+              fontSize: "14px",
+              cursor: "pointer",
+              borderRadius: "4px",
+              transition: "all 0.3s",
+              boxShadow: "0 4px 0 #26a085",
+              textTransform: "uppercase",
+              fontWeight: "bold",
+            }}
+            onMouseOver={(e) => {
+              e.currentTarget.style.backgroundColor = "#2bcca7";
+              e.currentTarget.style.transform = "translateY(2px)";
+              e.currentTarget.style.boxShadow = "0 2px 0 #26a085";
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.backgroundColor = "#33d9b2";
+              e.currentTarget.style.transform = "translateY(0px)";
+              e.currentTarget.style.boxShadow = "0 4px 0 #26a085";
+            }}
           >
             Copier le SVG
           </button>
@@ -93,12 +179,44 @@ export default function AvatarGenerator() {
             <button
               onClick={handleAddFavorite}
               disabled={!svg}
-              className="bg-green-700 px-4 py-2 rounded"
+              style={{
+                backgroundColor: "#ffb142",
+                color: "white",
+                border: "none",
+                padding: "12px 24px",
+                fontFamily: "Courier New, monospace",
+                fontSize: "14px",
+                cursor: "pointer",
+                borderRadius: "4px",
+                transition: "all 0.3s",
+                boxShadow: "0 4px 0 #d49132",
+                textTransform: "uppercase",
+                fontWeight: "bold",
+              }}
+              onMouseOver={(e) => {
+                e.currentTarget.style.backgroundColor = "#ffa726";
+                e.currentTarget.style.transform = "translateY(2px)";
+                e.currentTarget.style.boxShadow = "0 2px 0 #d49132";
+              }}
+              onMouseOut={(e) => {
+                e.currentTarget.style.backgroundColor = "#ffb142";
+                e.currentTarget.style.transform = "translateY(0px)";
+                e.currentTarget.style.boxShadow = "0 4px 0 #d49132";
+              }}
             >
               ⭐ Favori
             </button>
           ) : (
-            <p>Connectez-vous pour sauvegarder</p>
+            <p
+              style={{
+                color: "#ffda79",
+                alignSelf: "center",
+                fontSize: "14px",
+                fontStyle: "italic",
+              }}
+            >
+              Connectez-vous pour sauvegarder
+            </p>
           ))}
       </div>
     </div>

@@ -1,9 +1,30 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { supabase } from "../lib/supabaseClient";
+
 const generateAvatarUrl = import.meta.env.PUBLIC_FUNCTION_GENERATE_AVATAR_URL;
 
 export default function AvatarGenerator() {
   const [svg, setSvg] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+    const init = async () => {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      setUser(session?.user ?? null);
+      setLoading(false);
+    };
+    init();
+
+    const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+    return () => {
+      sub.subscription.unsubscribe();
+    };
+  }, []);
 
   async function generate() {
     setLoading(true);
@@ -25,6 +46,22 @@ export default function AvatarGenerator() {
       navigator.clipboard.writeText(svg);
     }
   }
+
+  const handleAddFavorite = async () => {
+    if (!user) return; // sécurité : pas d’utilisateur => on arrête
+
+    try {
+      const { error } = await supabase.from("favorites").insert({
+        user_id: user.id, // qui a ajouté le favori
+        svg: svg, // le code SVG à sauvegarder
+      });
+
+      if (error) throw error;
+    } catch (e) {
+      console.error(e);
+      alert("Erreur lors de l’ajout en favoris");
+    }
+  };
 
   return (
     <div className="border border-green-500 p-4 rounded-xl">
@@ -48,6 +85,18 @@ export default function AvatarGenerator() {
             Copier le SVG
           </button>
         )}
+        {svg &&
+          (user ? (
+            <button
+              onClick={handleAddFavorite}
+              disabled={!svg}
+              className="bg-green-700 px-4 py-2 rounded"
+            >
+              ⭐ Favori
+            </button>
+          ) : (
+            <p>Connectez-vous pour sauvegarder</p>
+          ))}
       </div>
     </div>
   );

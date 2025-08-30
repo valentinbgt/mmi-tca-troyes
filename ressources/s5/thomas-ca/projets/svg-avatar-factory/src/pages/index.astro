@@ -2,6 +2,7 @@
 import Layout from "../layouts/Layout.astro";
 import AvatarGenerator from "../components/AvatarGenerator.tsx";
 import AuthButtons from "../components/AuthButtons.tsx";
+import Favorites from "../components/Favorites.tsx";
 ---
 
 <Layout title="TP Avatar Factory">
@@ -15,9 +16,7 @@ import AuthButtons from "../components/AuthButtons.tsx";
         <!-- Bloc favoris -->
         <div class="border border-green-500 p-4 rounded-xl">
             <h2 class="text-xl mb-2">⭐ Mes Favoris</h2>
-            <div class="space-y-2">
-                <p>Aucun favori pour l’instant</p>
-            </div>
+            <Favorites client:load />
         </div>
     </div>
 </Layout>

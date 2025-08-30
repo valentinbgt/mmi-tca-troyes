@@ -1,4 +1,5 @@
 import { useState } from "react";
+const generateAvatarUrl = import.meta.env.PUBLIC_FUNCTION_GENERATE_AVATAR_URL;
 
 export default function AvatarGenerator() {
   const [svg, setSvg] = useState<string | null>(null);
@@ -8,14 +9,11 @@ export default function AvatarGenerator() {
     setLoading(true);
     setSvg(null);
 
-    const res = await fetch(
-      "http://127.0.0.1:54321/functions/v1/generate-avatar",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({}),
-      },
-    );
+    const res = await fetch(generateAvatarUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({}),
+    });
 
     const data = await res.json();
     setSvg(data.svg);

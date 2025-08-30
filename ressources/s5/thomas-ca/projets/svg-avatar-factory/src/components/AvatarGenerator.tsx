@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabaseClient";
 
 const generateAvatarUrl = import.meta.env.PUBLIC_FUNCTION_GENERATE_AVATAR_URL;
+const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
 
 export default function AvatarGenerator() {
   const [svg, setSvg] = useState<string | null>(null);
@@ -32,7 +33,10 @@ export default function AvatarGenerator() {
 
     const res = await fetch(generateAvatarUrl, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${supabaseAnonKey}`,
+      },
       body: JSON.stringify({}),
     });
 

@@ -28,10 +28,18 @@ export default function Favorites() {
       if (uid) load();
       else setItems([]);
     });
+
+    // Écouter l'événement favoriteAdded pour rafraîchir la liste
+    const handleFavoriteAdded = () => {
+      if (userId) load();
+    };
+    window.addEventListener("favoriteAdded", handleFavoriteAdded);
+
     return () => {
       sub.subscription.unsubscribe();
+      window.removeEventListener("favoriteAdded", handleFavoriteAdded);
     };
-  }, []);
+  }, [userId]);
 
   async function load() {
     const { data, error } = await supabase

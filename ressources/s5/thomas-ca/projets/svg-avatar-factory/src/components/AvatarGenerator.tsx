@@ -48,7 +48,7 @@ export default function AvatarGenerator() {
   }
 
   const handleAddFavorite = async () => {
-    if (!user) return; // sécurité : pas d’utilisateur => on arrête
+    if (!user) return; // sécurité : pas d'utilisateur => on arrête
 
     try {
       const { error } = await supabase.from("favorites").insert({
@@ -57,9 +57,12 @@ export default function AvatarGenerator() {
       });
 
       if (error) throw error;
+
+      // Émettre un événement personnalisé pour notifier les autres composants
+      window.dispatchEvent(new CustomEvent("favoriteAdded"));
     } catch (e) {
       console.error(e);
-      alert("Erreur lors de l’ajout en favoris");
+      alert("Erreur lors de l'ajout en favoris");
     }
   };
 

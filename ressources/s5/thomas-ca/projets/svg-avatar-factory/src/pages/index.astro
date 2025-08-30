@@ -1,9 +1,13 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import AvatarGenerator from "../components/AvatarGenerator.tsx";
+import AuthButtons from "../components/AuthButtons.tsx";
 ---
 
 <Layout title="TP Avatar Factory">
+    <div class="flex justify-end mb-4">
+        <AuthButtons client:load />
+    </div>
     <div class="grid md:grid-cols-2 gap-4">
         <!-- Bloc génération -->
         <AvatarGenerator client:load />

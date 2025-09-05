@@ -1,4 +1,3 @@
-
 ## Introduction
 
 Dans cet exercice, vous allez mettre en place une chaîne d'intégration et de déploiement continus (CI/CD) pour un projet Symfony. L'objectif est de vous familiariser avec les outils et les bonnes pratiques pour automatiser les tests, la vérification du code et le déploiement. Vous utiliserez des outils comme **PHP-CS-Fixer**, **PHPStan**, **PHPUnit**, **Composer Audit** et **GitHub Actions**.

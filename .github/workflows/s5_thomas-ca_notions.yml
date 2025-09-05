@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - "ressources/s5/thomas-ca/cours/notions/**"
+      - "ressources/s5/thomas-ca/tps/ci-cd-symfony/**"
 
 permissions:
   contents: write
@@ -14,7 +14,7 @@ permissions:
 
 #defaults:
 #  run:
-#    working-directory: ressources/s5/thomas-ca/projets/hello-world
+#    working-directory: ressources/s5/thomas-ca/tps/ci-cd-symfony
 
 jobs:
   build-and-deploy:
@@ -32,7 +32,8 @@ jobs:
       - name: Markdown to Html
         run: |
           mkdir -p dist/s5/thomas-ca/cours/notions/
-          npx @marp-team/marp-cli@latest ressources/s5/thomas-ca/cours/notions/main.md -o dist/s5/thomas-ca/cours/notions/index.html --theme gaia
+          cp ressources/s5/thomas-ca/tps/ci-cd-symfony/index.md dist/s5/thomas-ca/tps/ci-cd-symfony/index.html
+          # npx markdown-to-html-cli --source ressources/s5/thomas-ca/tps/ci-cd-symfony/main.md --output dist/s5/thomas-ca/tps/ci-cd-symfony/index.html
 
       - name: Deploy to gh-pages
         run: |
@@ -45,5 +46,5 @@ jobs:
           git config user.name "github-actions"
           git config user.email "actions@github.com"
           git add .
-          git commit -m "Update Hello-World site" || echo "No changes to commit"
+          git commit -m "Update CI-CD symfony TP" || echo "No changes to commit"
           git push origin gh-pages
